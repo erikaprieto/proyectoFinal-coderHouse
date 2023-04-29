@@ -1,76 +1,123 @@
+let inputAnimal = document.createElement("input")
+inputAnimal.type = "text"
+inputAnimal.placeholder = "Ingrese un Animal"
+inputAnimal.id = "inputAnimal"
+inputAnimal.className = "textfield"
+
+let inputImagen = document.createElement("input")
+inputImagen.type = "text"
+inputImagen.placeholder = "Ingrese la imagen del animal"
+inputImagen.id = "inputImagen"
+inputImagen.className = "textfield"
 
 
-const creadorDeProductos = (nombreDelProducto, cantidadDelProducto, precioDelProducto) => {
-    const producto = {
-        nombre: nombreDelProducto,
-        cantidad: cantidadDelProducto,
-        precio: precioDelProducto,
-        calcularTotal: () => {
-            this.total = this.cantidad * this.precio
-        },
-        total: cantidadDelProducto * precioDelProducto
-    };
-
-    return producto;
+function creadorDeInput(type, placeholder, id, className) {
+    let input = document.createElement("input")
+    input.type = type;
+    input.placeholder = placeholder;
+    input.id = id;
+    input.className = className;
+    
+    return input;
 }
 
-let IngresarProducto = 1;
-const carrito = [];
+let inputDescripcion = creadorDeInput("text", "Ingrese descripcion", "inputDescripcion", "textfield")
 
-while (IngresarProducto !== 3) {
-    if (IngresarProducto == 1) {
-        const nombreDelProducto = prompt("Ingrese el nombre del producto")
-        const cantidadDelProducto = Number(prompt("ingrese la cantidad del producto"))
-        const precioDelProducto = Number(prompt("ingrese el precio del producto"))
+document.body.append(inputAnimal)
+document.body.append(inputDescripcion)
+document.body.append(inputImagen)
 
-        const nuevoProducto = creadorDeProductos(nombreDelProducto, cantidadDelProducto, precioDelProducto)
-        carrito.push(nuevoProducto);
+let boton = document.createElement("button")
+boton.innerText = "Guardar"
+document.body.append(boton)
 
-    } else if (IngresarProducto == 2) {
 
-        let ModificarProducto = prompt("Que producto desea modificar ? indicar nombre.")
+let animalValor
+let imagenValor
+let descripcionValor
 
-        carrito.forEach((producto) => {
-            if (producto.nombre === ModificarProducto) {
-                let valorAModificar = prompt("indicar mediante el numero correspondiente que desea modificar" + "\n" + "1.Nombre" + "\n" + "2.Cantidad" + "\n" + "3.Precio")
-                switch (valorAModificar) {
-                    case "1":
-                        let nuevoNombre = prompt("ingrese el nuevo nombre")
-                        producto.nombre = nuevoNombre
-                        break;
-                    case "2":
-                        let nuevaCantidad = Number(prompt("ingrese la nueva cantidad"))
-                        producto.cantidad = nuevaCantidad;
-                        producto.total = nuevaCantidad * producto.precio
-                        break;
-                    case "3":
-                        let nuevoPrecio = Number(prompt("ingrese el nuevo precio"))
-                        producto.precio = nuevoPrecio;
-                        producto.total = nuevoPrecio * producto.cantidad
-                        break;
-                }
-            }
-        })
 
-    }
-    carrito.forEach((producto) => {alert("Nombre: "+ producto.nombre + "\n" + " Cantidad: "+ producto.cantidad + "\n" + " Precio: "+ producto.precio)})
-
-    console.table(carrito)
-    IngresarProducto = Number(prompt("Que accion desea realizar ? Indicar con el numero correspondiente" + "\n" + "1.Agregar" + "\n" + "2.Modificar" + "\n" + "3.Totalizar"));
-
-}
-let totalproductos = 0;
-carrito.forEach((producto) => {
-    totalproductos = totalproductos + producto.total;
+inputAnimal.addEventListener("blur", (event) => {
+    animalValor = event.target.value
 })
-alert(totalproductos)
-console.log(carrito);
+
+inputImagen.addEventListener("blur", (event) => {
+    imagenValor = event.target.value
+})
+
+inputDescripcion.addEventListener("blur", (event) => {
+    descripcionValor = event.target.value
+})
+
+let body_section = document.createElement("section")
+document.body.append(body_section)
+
+let animales = JSON.parse(localStorage.getItem("animales"))
+
+if (animales === null ) {
+    animales = []
+    
+    console.log(animales);
+    
+}
+
+animales.forEach(animal => {
+    let body_article = document.createElement("article")
+    let article_h2 = document.createElement("h2")
+    let article_imagen = document.createElement("img")
+    let article_p = document.createElement("p")
+    
+    article_h2.innerText = animal.animal;
+    article_p.innerText = animal.tamaño;
+    article_imagen.src = animal.imagen;
+    article_imagen.alt = animal.animal;
+    
+    body_article.append(article_h2)
+    body_article.append(article_imagen)
+    body_article.append(article_p)
+    body_section.append(body_article)
+
+
+});
 
 
 
 
+boton.addEventListener("click", () => {
+    let animal = {
+        animal: animalValor,
+        imagen: imagenValor,
+        tamaño: descripcionValor
+    }
+console.log(animales);
+    animales.push(animal)
+    
 
-// solicitarle al usuario el producto que desea modificar
-//preguntar que quiere modificar
-// fijarme si el valor existe
-// si el producto existe, lo modificamos y lo guardamos 
+    animalValor = ""
+    imagenValor = ""
+    descripcionValor = ""
+    inputAnimal.value = ""
+    inputImagen.value = ""
+    inputDescripcion.value = ""
+    console.log(animales);
+
+    let stringAnimales = JSON.stringify(animales)
+    localStorage.setItem("animales", stringAnimales)
+
+    let body_article = document.createElement("article")
+    let article_h2 = document.createElement("h2")
+    let article_imagen = document.createElement("img")
+    let article_p = document.createElement("p")
+
+    article_h2.innerText = animal.animal;
+    console.log(animal.animal);
+    article_p.innerText = animal.tamaño;
+    article_imagen.src = animal.imagen;
+    article_imagen.alt = animal.animal;
+
+    body_article.append(article_h2)
+    body_article.append(article_imagen)
+    body_article.append(article_p)
+    body_section.append(body_article)
+
+})
